@@ -1,0 +1,28 @@
+{
+  "name": "MATLAB",
+  "keywords": [
+    "break",
+    "case",
+    "catch",
+    "classdef",
+    "continue",
+    "else",
+    "elseif",
+    "end",
+    "for",
+    "function",
+    "global",
+    "if",
+    "otherwise",
+    "parfor",
+    "persistent",
+    "return",
+    "spmd",
+    "switch",
+    "try",
+    "while"
+  ],
+  "sources": [
+    "https://www.mathworks.com/help/matlab/ref/iskeyword.html"
+  ]
+}

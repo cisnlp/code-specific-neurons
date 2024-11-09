@@ -1,0 +1,29 @@
+{
+  "name": "R",
+  "keywords": [
+    "...",
+    "..1",
+    "FALSE",
+    "Inf",
+    "NA",
+    "NA_character_",
+    "NA_complex_",
+    "NA_integer_",
+    "NA_real_",
+    "NULL",
+    "NaN",
+    "TRUE",
+    "break",
+    "else",
+    "for",
+    "function",
+    "if",
+    "in",
+    "next",
+    "repeat",
+    "while"
+  ],
+  "sources": [
+    "https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Reserved-words"
+  ]
+}

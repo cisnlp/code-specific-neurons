@@ -1,0 +1,39 @@
+{
+  "name": "Python 2",
+  "keywords": [
+    "and",
+    "as",
+    "assert",
+    "break",
+    "class",
+    "continue",
+    "def",
+    "del",
+    "elif",
+    "else",
+    "except",
+    "exec",
+    "finally",
+    "for",
+    "from",
+    "global",
+    "if",
+    "import",
+    "in",
+    "is",
+    "lambda",
+    "not",
+    "or",
+    "pass",
+    "print",
+    "raise",
+    "return",
+    "try",
+    "while",
+    "with",
+    "yield"
+  ],
+  "sources": [
+    "https://docs.python.org/2.7/reference/lexical_analysis.html#keywords"
+  ]
+}

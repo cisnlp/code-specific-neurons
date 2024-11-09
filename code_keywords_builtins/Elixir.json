@@ -1,0 +1,23 @@
+{
+  "name": "Elixir",
+  "keywords": [
+    "after",
+    "and",
+    "catch",
+    "do",
+    "else",
+    "end",
+    "false",
+    "fn",
+    "in",
+    "nil",
+    "not",
+    "or",
+    "rescue",
+    "true",
+    "when"
+  ],
+  "sources": [
+    "https://hexdocs.pm/elixir/syntax-reference.html#reserved-words"
+  ]
+}
