@@ -54,3 +54,13 @@ P(x_{n+1}, \dots, x_{n+j} | h^{(\ell)}_n) = \prod_{k=1}^j P(x_{n+k} \mid h^{(\el
 
 [^1]: https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens  
 [^2]: https://github.com/AlignmentResearch/tuned-lens
+
+
+## Code Keywords and Builtins
+
+We included keywords and builtins for different programming languages in the code_keywords_builtins [directory](code_keywords_builtins).
+
+Builtins include: primitive types, macros, modules, collections, containers, and builtin functions, excluding keywords.
+
+
+
