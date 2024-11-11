@@ -34,7 +34,7 @@ where $W_U$ is the unembedding matrix that projects the final hidden states into
 The core idea of the Logit Lens is to set the residual updates to zero, focusing solely on the hidden state from layer $l$:
 
 ```math
-\mathcal{L}(\mathbf{h}^{(\ell)}) = \mathrm{LayerNorm}[\mathbf{h}^{(\ell)}] W_U.
+\mathcal{LogitLens}(\mathbf{h}^{(\ell)}) = \mathrm{LayerNorm}[\mathbf{h}^{(\ell)}] W_U.
 ```
 
 Then, softmax is applied to these logits to calculate the probabilities of the next output token $P(x\_{n+1} | \mathbf{h}^{(\ell)}\_n)$.
