@@ -1,5 +1,4 @@
-
-from beamsearch import custom_beam_search
+from code_lens.utils.beamsearch import custom_beam_search
 import plotly.graph_objects as go
 import numpy as np
 
