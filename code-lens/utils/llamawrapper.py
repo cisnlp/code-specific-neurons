@@ -14,7 +14,7 @@ Change Log:
 - V 1.0: https://github.com/nrimsky/LM-exp/blob/main/intermediate_decoding/intermediate_decoding.ipynb
 - V 1.1: https://github.com/epfl-dlab/llm-latent-language/blob/main/llamawrapper.py
 - V 1.2: https://github.com/Sayn-Wittgenstein/latent_language_of_multilingual_model/blob/main/llamawrapper.py
-- V 1.3: https://github.com/cisnlp/code-llm-lens/blob/main/llamawrapper.py
+- V 1.3: here.
 """
 
 

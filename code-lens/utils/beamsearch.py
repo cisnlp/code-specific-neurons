@@ -11,7 +11,7 @@ License: No explicit license provided.
 
 Change Log:
 - V 1.0: https://github.com/Sayn-Wittgenstein/latent_language_of_multilingual_model/blob/main/Translation.ipynb
-- V 1.1: https://github.com/cisnlp/code-llm-lens/blob/main/beamsearch.py
+- V 1.1: here.
 """
 
 

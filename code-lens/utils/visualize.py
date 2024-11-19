@@ -3,6 +3,11 @@ Visualize and Generate Heatmaps of Logit Lens
 
 Copyright:
 Amir Hossein Kargaran
+
+License: Repository License.
+
+Change Log:
+- V 1.0: here.
 """
 
 
