@@ -1,4 +1,7 @@
-# code-llm-lens
+# code-lens 
+[![Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/cisnlp/code-lens/blob/main/interactive.ipynb)
+
+Code-Lens: On the Latent Language of Code in Code Language Models
 
 ## Look Ahead in Logit Lens
 
@@ -58,7 +61,7 @@ P(x_{n+1}, \dots, x_{n+j} | h^{(\ell)}_n) = \prod_{k=1}^j P(x_{n+k} \mid h^{(\el
 
 ## Code Keywords and Builtins
 
-We included keywords and builtins for different programming languages in the code_keywords_builtins [directory](code_keywords_builtins).
+We included keywords and builtins for different programming languages in the [code_lens/utils/keywords](code_lens/utils/keywords).
 
 Builtins include: primitive types, macros, modules, collections, containers, and builtin functions, excluding keywords.
 

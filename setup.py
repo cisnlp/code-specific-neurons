@@ -15,7 +15,7 @@ setuptools.setup(
     url='https://github.com/cisnlp/code-lens',
     packages=setuptools.find_packages(),
     package_data={
-        'code-lens.utils': ['keywords/*.json']
+        'code_lens.utils': ['keywords/*.json']
     },
     include_package_data=True,
     classifiers=[
