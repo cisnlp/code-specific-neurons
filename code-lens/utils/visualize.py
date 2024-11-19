@@ -1,8 +1,34 @@
+"""
+Visualize and Generate Heatmaps of Logit Lens
+
+Copyright:
+Amir Hossein Kargaran
+"""
+
+
+
 from code_lens.utils.beamsearch import custom_beam_search
 import plotly.graph_objects as go
 import numpy as np
 
-def generate_heatmap(model, tokenizer, device, text, num_beams=1, max_length=2, layers = [0, 20], min_position = 123, max_position = 133):
+
+def trunc_string(string: str, new_len: int) -> str:
+    """Truncate a string."""
+
+    if new_len >= len(string):
+        return  string 
+
+    else:
+        return  string[:new_len] + '…' # → '[…]'
+
+
+def escape_html_tags(text):
+    # Replace '<' with '&lt;' and '>' with '&gt;'
+    escaped_text = text.replace("<", "&lt;").replace(">", "&gt;")
+    return escaped_text
+
+
+def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, max_length=2, min_position = None, max_position = None):
 
     tokens = tokenizer.encode(text, return_tensors='pt').to(device)
     tokens = tokens.flatten()
@@ -42,7 +68,7 @@ def generate_heatmap(model, tokenizer, device, text, num_beams=1, max_length=2, 
 
 
 
-def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show):
+def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show, trunc_size = 6):
     """
     Visualizes a heatmap based on the provided heatmap data, tokens, and layers.
 
@@ -74,13 +100,16 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show):
 
             # Prepare the annotation to show the top token
             annotation_text = top_values[0][0]
+            annotation_text = escape_html_tags(annotation_text)
+            annotation_text = trunc_string(annotation_text, trunc_size)
+
             annotations.append(
                 dict(
                     x=token_indices_to_show.index(token_id),
                     y=layers.index(layer),
                     text=annotation_text, 
                     showarrow=False,
-                    font=dict(size=10, color="black"),
+                    font=dict(size=10, color="white" if top1_prob >= 0.7 or top1_prob <= 0.3 else "black"),
                     align="center"
                 )
             )
@@ -92,7 +121,7 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show):
         z=heatmap_matrix,
         x=np.arange(len(token_indices_to_show)),
         y= np.arange(len(layers)),
-        colorscale='RdBu',  # Color scale based on top1_prob
+        colorscale='rdbu',  # Color scale based on top1_prob
         colorbar=dict(title="Probability", titleside="right"),
         zmin=0,
         zmax=1,
@@ -106,7 +135,7 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show):
             values = heatmap_data['values'][layer][token_id]
             top_values = sorted(values, key=lambda x: x[1], reverse=True)  # Sort by probability
             
-            fig.data[0].text[layers.index(layer)][token_indices_to_show.index(token_id)] = "<br>".join([f"{t[0]}: {t[1]:.2f}" for t in top_values])
+            fig.data[0].text[layers.index(layer)][token_indices_to_show.index(token_id)] = "<br>".join([f"{escape_html_tags(t[0])}: {t[1]:.2f}" for t in top_values])
 
     # Add annotations for top 3 tokens
     for ann in annotations:
@@ -120,7 +149,7 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show):
         xaxis=dict(tickmode="array", tickvals=np.arange(len(token_indices_to_show)), ticktext=[str(output_tokens[t_id]) for index, t_id in enumerate(token_indices_to_show [:-1])], tickangle=90),
         yaxis=dict(tickmode="array", tickvals=np.arange(len(layers)), ticktext=[f"{i}" for i in layers]),
         hovermode='closest',
-        autosize=False
+        autosize=True
     )
 
     return fig
