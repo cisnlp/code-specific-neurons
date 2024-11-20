@@ -3,6 +3,10 @@
 
 Code-Lens: On the Latent Language of Code in Code Language Models
 
+
+![Code-Lens](assets/interactive.png.png)
+
+
 ## Look Ahead in Logit Lens
 
 In this work, we use the logit lens[^1] rather than the tuned lens[^2]. The tuned lens would undermine our goal of understanding whether the models, when prompted with `X`, take a detour through `Y` internal states before outputting the `X` text. Since the tuned lens is specifically trained to map internal states to the final `X` next-token prediction, it eliminates our signal of interest.
