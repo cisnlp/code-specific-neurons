@@ -4,7 +4,7 @@
 Code-Lens: On the Latent Language of Code in Code Language Models
 
 
-![Code-Lens](assets/interactive.png.png)
+![Code-Lens](./assets/interactive.png)
 
 
 ## Look Ahead in Logit Lens
