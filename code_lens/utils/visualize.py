@@ -12,7 +12,7 @@ Change Log:
 
 
 
-from code_lens.utils.beamsearch import custom_beam_search
+from code_lens.utils.beamsearch import custom_beam_search, batch_custom_beam_search
 import plotly.graph_objects as go
 import numpy as np
 
@@ -33,7 +33,7 @@ def escape_html_tags(text):
     return escaped_text
 
 
-def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, max_length=2, min_position = None, max_position = None):
+def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, max_length=2, min_position = None, max_position = None, batch_size=4):
 
     tokens = tokenizer.encode(text, return_tensors='pt').to(device)
     tokens = tokens.flatten()
@@ -54,22 +54,50 @@ def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, 
         'values': {layer: {i: [] for i in range(min_position, max_position)} for layer in layers}  # Empty list for each layer and token
     }
 
+    if batch_size == 1:
+        # Loop through tokens and layers to populate the heatmap data
+        for token_idx in range(min_position, max(max_position, 0)):
+            
+            temp_tokens = tokens[:token_idx]
+            temp_prompt = tokenizer.decode(temp_tokens)
+    
+            for layer in layers:
+                # Perform beam search to get token results and their probabilities
+                results = custom_beam_search(model=model.model, tokenizer=tokenizer, device=device, text=temp_prompt, num_beams=num_beams, max_length=max_length, layer_id=layer)
+    
+                # Collect the top tokens and their probabilities
+                for result, id, probability in results:
+                    heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
 
-    # Loop through tokens and layers to populate the heatmap data
-    for token_idx in range(min_position, max(max_position, 0)):
+    else:
+        temp_prompts = []
+        token_idxs = []
+        for idx, token_idx in enumerate(range(min_position, max(max_position, 0))):
+                
+            temp_tokens = tokens[:token_idx]
+            temp_prompt = tokenizer.decode(temp_tokens)
         
-        temp_tokens = tokens[:token_idx]
-        temp_prompt = tokenizer.decode(temp_tokens)
-
+            if idx % batch_size == 0:
+                temp_prompts.append([])
+                token_idxs.append([])
+        
+            temp_prompts[-1].append(temp_prompt)
+            token_idxs[-1].append(token_idx)
+        
         for layer in layers:
-            # Perform beam search to get token results and their probabilities
-            results = custom_beam_search(model=model.model, tokenizer=tokenizer, device=device, text=temp_prompt, num_beams=num_beams, max_length=max_length, layer_id=layer)
-
-            # Collect the top 3 tokens and their probabilities
-            for result, id, probability in results:
-                heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
-
+        
+            for batch_token_idx, batch_temp_prompt in zip(token_idxs, temp_prompts):
+                # Perform beam search to get token results and their probabilities
+                batch_results = batch_custom_beam_search(model=model.model, tokenizer=tokenizer, device=device, texts=batch_temp_prompt, num_beams=num_beams, max_length=max_length, layer_id=layer)
+        
+                # Collect the top tokens and their probabilities
+                for idx, results in enumerate(batch_results):
+                    token_idx = batch_token_idx[idx]
+                    for result, id, probability in results:
+                        heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
+    
     return heatmap_data
+
 
 
 
