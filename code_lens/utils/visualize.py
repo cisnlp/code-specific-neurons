@@ -193,7 +193,7 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show, trunc
 
     # Update layout for better visualization
     fig.update_layout(
-        title="LogitLens",
+        title="Code-Lens",
         xaxis_title="Tokens",
         yaxis_title="Layers",
         xaxis=dict(tickmode="array", tickvals=np.arange(len(token_indices_to_show)), ticktext=[str(output_tokens[t_id]) for index, t_id in enumerate(token_indices_to_show [:-1])], tickangle=90),
