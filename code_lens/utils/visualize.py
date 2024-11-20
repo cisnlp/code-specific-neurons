@@ -12,7 +12,7 @@ Change Log:
 
 
 
-from code_lens.utils.beamsearch import custom_beam_search, batch_custom_beam_search
+from code_lens.utils.beamsearch import custom_beam_search, batch_custom_beam_search, batch_custom_signle_search
 import plotly.graph_objects as go
 import numpy as np
 
@@ -54,7 +54,8 @@ def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, 
         'values': {layer: {i: [] for i in range(min_position, max_position)} for layer in layers}  # Empty list for each layer and token
     }
 
-    if batch_size == 1:
+
+    if batch_size == 1 and max_length > 1:
         # Loop through tokens and layers to populate the heatmap data
         for token_idx in range(min_position, max(max_position, 0)):
             
@@ -68,6 +69,7 @@ def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, 
                 # Collect the top tokens and their probabilities
                 for result, id, probability in results:
                     heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
+
 
     else:
         temp_prompts = []
@@ -84,18 +86,33 @@ def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, 
             temp_prompts[-1].append(temp_prompt)
             token_idxs[-1].append(token_idx)
         
-        for layer in layers:
-        
+        if max_length==1:
+            
             for batch_token_idx, batch_temp_prompt in zip(token_idxs, temp_prompts):
                 # Perform beam search to get token results and their probabilities
-                batch_results = batch_custom_beam_search(model=model.model, tokenizer=tokenizer, device=device, texts=batch_temp_prompt, num_beams=num_beams, max_length=max_length, layer_id=layer)
-        
-                # Collect the top tokens and their probabilities
-                for idx, results in enumerate(batch_results):
-                    token_idx = batch_token_idx[idx]
-                    for result, id, probability in results:
-                        heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
-    
+                layer_batch_results = batch_custom_signle_search(model=model.model, tokenizer=tokenizer, device=device, texts=batch_temp_prompt, num_beams=num_beams, layer_ids=layers)
+
+                for layer in layers:
+                    batch_results = layer_batch_results[layer]
+                    # Collect the top tokens and their probabilities
+                    for idx, results in enumerate(batch_results):
+                        token_idx = batch_token_idx[idx]
+                        for result, id, probability in results:
+                            heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
+
+        elif max_length > 1:
+            for layer in layers:
+            
+                for batch_token_idx, batch_temp_prompt in zip(token_idxs, temp_prompts):
+                    # Perform beam search to get token results and their probabilities
+                    batch_results = batch_custom_beam_search(model=model.model, tokenizer=tokenizer, device=device, texts=batch_temp_prompt, num_beams=num_beams, max_length=max_length, layer_id=layer)
+            
+                    # Collect the top tokens and their probabilities
+                    for idx, results in enumerate(batch_results):
+                        token_idx = batch_token_idx[idx]
+                        for result, id, probability in results:
+                            heatmap_data['values'][layer][token_idx].append((result, probability))  # Append the result to the values list
+
     return heatmap_data
 
 

@@ -133,3 +133,49 @@ def batch_custom_beam_search(model, tokenizer, device, texts, layer_id, num_beam
         batch_results.append(list(zip(next_texts, candidates[b], probabilities[b])))
 
     return batch_results
+
+
+
+
+def batch_custom_signle_search(model, tokenizer, device, texts, layer_ids, num_beams=3):
+
+    # Add pad token
+    tokenizer.pad_token = tokenizer.eos_token
+    
+    # Tokenize the input texts as a batch
+    input_ids = tokenizer(texts, return_tensors='pt', padding=True, truncation=True).input_ids.to(device)
+
+    # Initial single token candidates and probabilities
+    with torch.no_grad():
+        outputs = model(input_ids)
+
+        top_indices_layers = {}
+        top_probs_layers = {}
+        for layer_id in layer_ids:
+            layer_output = model.model.layers[layer_id].output
+            normed = model.model.norm(layer_output)
+
+            # Logits = [batch_size, tokens, vocab]
+            logits = model.lm_head(normed)
+            probs = F.softmax(logits[:, -1, :], dim=-1)
+            top_probs, top_indices = torch.topk(probs, num_beams, dim=1)
+
+            top_indices_layers[layer_id] = top_indices
+            top_probs_layers[layer_id] = top_probs
+
+    batch_results_layers = {}
+    for layer_id in layer_ids:
+        # Initialize candidates and probabilities for each text in the batch
+        batch_size = input_ids.size(0)
+        candidates = [[ [top_indices_layers[layer_id][b, i].item()] for i in range(num_beams) ] for b in range(batch_size)]
+        probabilities = [[ top_probs_layers[layer_id][b, i].item() for i in range(num_beams) ] for b in range(batch_size)]
+
+        # Decode the generated candidates for each text in the batch
+        batch_results = []
+        for b in range(batch_size):
+            next_texts = [tokenizer.decode(candidate) for candidate in candidates[b]]
+            batch_results.append(list(zip(next_texts, candidates[b], probabilities[b])))
+
+        batch_results_layers[layer_id] = batch_results
+
+    return batch_results_layers
