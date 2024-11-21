@@ -203,3 +203,149 @@ def visualize_heatmap(heatmap_data, layers_to_show, token_indices_to_show, trunc
     )
 
     return fig
+
+
+import glob
+import json
+
+def get_code_keywords(path='./utils/keywords'):
+    # Get all file paths from the specified directory
+    code_paths = glob.glob(path + '/*.json')  # Added '.json' to filter JSON files
+
+    code_jsons = {}
+    for code_path in code_paths:
+        with open(code_path, 'r') as file:  # Open the file to read its content
+            code_json = json.load(file)  # Load the JSON content
+
+        # Extract the name and keywords/builtins
+        code_name = code_json.get('name', 'default')
+        code_jsons[code_name] = code_json.get('keywords', []) + code_json.get('builtins', [])
+
+    return code_jsons
+
+# Example usage
+code_jsons = get_code_keywords(path='./utils/keywords')
+
+
+def update_top_values_with_majority(top_values, code_json):
+    updated_top_values = []
+
+    for original_string, score in top_values:
+        # Split the string into components (words)
+        components = original_string.split()
+        match_counts = {}
+
+        # Count matches for each code name
+        for name, keywords in code_json.items():
+            match_counts[name] = sum(1 for component in components if component in keywords)
+
+        # Find code names where the majority of components match
+        total_components = len(components)
+        matching_code_names = [
+            name for name, count in match_counts.items() if count / total_components >= 0.5
+        ]
+
+        # Update the string with matched code names if any are found
+        if matching_code_names:
+            updated_string = f"{original_string} [{' '.join(matching_code_names)}]"
+        else:
+            updated_string = original_string
+
+        # Add the updated tuple to the new list
+        updated_top_values.append((updated_string, score))
+
+    return updated_top_values
+
+
+
+def visualize_heatmap_code(heatmap_data, layers_to_show, token_indices_to_show, trunc_size = 6):
+    """
+    Visualizes a heatmap based on the provided heatmap data, tokens, and layers.
+
+    Parameters:
+    - heatmap_data (dict): A dictionary containing tokens, layers, and their respective probabilities.
+
+    Returns:
+    - fig (plotly.graph_objects.Figure): A Plotly figure containing the generated heatmap.
+    """
+    # Create the heatmap matrix (top_prob values) and annotations (top_values)
+    heatmap_matrix = []
+    annotations = []
+    layers = layers_to_show
+
+    output_tokens = heatmap_data['tokens'].copy()
+    output_tokens.insert(0, '')
+
+
+    for layer in layers:
+        row = []
+        for token_id in token_indices_to_show:
+            # Get the top 3 tokens and their probabilities for this token-layer pair
+            values = heatmap_data['values'][layer][token_id]
+            top_values = sorted(values, key=lambda x: x[1], reverse=True)  # Sort by probability
+            
+            top_values = update_top_values_with_majority(top_values, code_jsons)
+
+            top1_prob = top_values[0][1]
+
+            # Color the cell based on top1_prob
+            row.append(top1_prob)
+
+            # Prepare the annotation to show the top token
+            annotation_text = top_values[0][0]
+
+
+
+            annotation_text = escape_html_tags(annotation_text)
+            annotation_text = trunc_string(annotation_text, trunc_size)
+
+            annotations.append(
+                dict(
+                    x=token_indices_to_show.index(token_id),
+                    y=layers.index(layer),
+                    text=annotation_text, 
+                    showarrow=False,
+                    font=dict(size=10, color="white" if top1_prob >= 0.7 or top1_prob <= 0.3 else "black"),
+                    align="center"
+                )
+            )
+
+        heatmap_matrix.append(row)
+
+    # Define the heatmap, where each cell displays the first token (top token) with color based on top1_prob
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_matrix,
+        x=np.arange(len(token_indices_to_show)),
+        y= np.arange(len(layers)),
+        colorscale='rdbu',  # Color scale based on top1_prob
+        colorbar=dict(title="Probability", titleside="right"),
+        zmin=0,
+        zmax=1,
+        hovertemplate="%{text}<extra></extra>",  # Shows the top 3 tokens and their probabilities on hover
+        text=[['' for _ in token_indices_to_show] for _ in layers],  # Default empty text for each cell
+    ))
+
+    # Update the cell text to show only the first token (from sorted top_values)
+    for layer in layers:
+        for token_id in token_indices_to_show:
+            values = heatmap_data['values'][layer][token_id]
+            top_values = sorted(values, key=lambda x: x[1], reverse=True)  # Sort by probability
+            
+            fig.data[0].text[layers.index(layer)][token_indices_to_show.index(token_id)] = "<br>".join([f"{escape_html_tags(t[0])}: {t[1]:.2f}" for t in top_values])
+
+    # Add annotations for top 3 tokens
+    for ann in annotations:
+        fig.add_annotation(ann)
+
+    # Update layout for better visualization
+    fig.update_layout(
+        title="Code-Lens",
+        xaxis_title="Tokens",
+        yaxis_title="Layers",
+        xaxis=dict(tickmode="array", tickvals=np.arange(len(token_indices_to_show)), ticktext=[str(output_tokens[t_id]) for index, t_id in enumerate(token_indices_to_show [:-1])], tickangle=90),
+        yaxis=dict(tickmode="array", tickvals=np.arange(len(layers)), ticktext=[f"{i}" for i in layers]),
+        hovermode='closest',
+        autosize=True
+    )
+
+    return fig
