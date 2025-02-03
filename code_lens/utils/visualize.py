@@ -33,7 +33,7 @@ def escape_html_tags(text):
     return escaped_text
 
 
-def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, max_length=2, min_position = None, max_position = None, batch_size=4):
+def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, max_length=2, min_position = None, max_position = None, batch_size=1):
 
     tokens = tokenizer.encode(text, return_tensors='pt').to(device)
     tokens = tokens.flatten()
@@ -90,6 +90,7 @@ def generate_heatmap(model, tokenizer, device, text, layers = [0], num_beams=1, 
             
             for batch_token_idx, batch_temp_prompt in zip(token_idxs, temp_prompts):
                 # Perform beam search to get token results and their probabilities
+                # TODO: For some models seems not working
                 layer_batch_results = batch_custom_signle_search(model=model.model, tokenizer=tokenizer, device=device, texts=batch_temp_prompt, num_beams=num_beams, layer_ids=layers)
 
                 for layer in layers:
