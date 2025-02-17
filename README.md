@@ -1,17 +1,14 @@
-## Method 1: Interpreting latent embeddings 
+## Code-logit-lens 
 
-For this method, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens).
+To interpret latent embeddings, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens).
 
+#### Code Keywords and Built-ins
 
-#### Code Keywords and Builtins
+We included keywords and built-ins for different programming languages in the [datasets/keywords](datasets/keywords). Built-ins include: primitive types, macros, modules, collections, containers, and built-in functions, excluding keywords.
 
-We included keywords and builtins for different programming languages in the [code-logit-lens/keywords](code-logit-lens/keywords). Builtins include: primitive types, macros, modules, collections, containers, and builtin functions, excluding keywords.
+## Code-MEXA 
+To calculate cross-lingual alignment between programming languages, we use MEXA.
 
+## Code-LAPE
 
-## Method 2: Cross-lingual alignment
-
-
-## Method 3: Language-specific neurons
-
-
-
+To calculate language-specific neurons, we use LAPE.
