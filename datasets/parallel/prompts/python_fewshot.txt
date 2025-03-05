@@ -1,0 +1,4 @@
+message = ""
+class MyClass: 
+value = 5
+def do_something():

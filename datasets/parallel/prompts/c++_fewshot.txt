@@ -1,0 +1,4 @@
+std::string message = "";  
+class MyClass {};  
+int value = 5;  
+void do_something() {}  

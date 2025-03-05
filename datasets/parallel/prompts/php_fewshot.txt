@@ -1,0 +1,4 @@
+$message = "";  
+class MyClass {}  
+$value = 5;  
+function do_something() {}  

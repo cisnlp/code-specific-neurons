@@ -1,0 +1,4 @@
+String message = "";
+public class MyClass {}
+public int value = 5;
+public void doSomething() {}

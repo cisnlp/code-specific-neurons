@@ -1,0 +1,4 @@
+let message = "";
+struct MyClass {}
+let value: i32 = 5;
+fn do_something() {}

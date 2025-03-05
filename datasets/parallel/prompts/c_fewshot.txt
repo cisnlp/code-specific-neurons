@@ -1,0 +1,4 @@
+char message[] = "";  
+struct MyClass {};  
+int value = 5;  
+void do_something() {}  

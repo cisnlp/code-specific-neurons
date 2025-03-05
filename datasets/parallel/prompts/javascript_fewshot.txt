@@ -1,0 +1,4 @@
+let message = "";  
+class MyClass {}  
+let value = 5;  
+function do_something() {}  
