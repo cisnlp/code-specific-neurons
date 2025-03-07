@@ -8,17 +8,16 @@ git clone https://github.com/cisnlp/code-specific-neurons.git
 
 ### code-logitlens 
 
-To interpret latent embeddings, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens). We implement our version of Logit Lens in `code-logitlens/compute_lens.ipynb`. It uses the [datasets/parallel](datasets/parallel) and sets one language as the input language and the other as the output language. It then performs translation tasks, recording the decoded tokens along with their probabilities and ranks.
+To interpret latent embeddings, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens). We implement our version of Logit Lens in `code-logitlens/compute_lens.ipynb`. It uses the [datasets/parallel](datasets/parallel) and perform the translation task from one programming langauge to another. It sets one language as the input language and the other as the output language. It records the decoded tokens for each token and layer along with their probabilities and ranks.
 
 ### code-mexa 
 To calculate cross-lingual alignment between programming languages, we use MEXA.  
-MEXA leverages [datasets/parallel](datasets/parallel) to compute alignment between a pivot language and the remaining languages. We use the [MEXA codebase](https://github.com/cisnlp/MEXA) and implement our code in `code-mexa/compute_mexa.ipynb`.
+MEXA uses [datasets/parallel](datasets/parallel) to compute alignment between a pivot language and the other languages. We use the [MEXA codebase](https://github.com/cisnlp/MEXA) and implement our code in `code-mexa/compute_mexa.ipynb`.
 
 ### code-lape
 
-To calculate language-specific neurons, we use LAPE. LAPE uses [datasets/raw](datasets/raw) to identify language-specific neurons within LLMs.
-We use the [LAPE codebase](https://github.com/rucaibox/language-specific-neurons).
-
+To calculate language-specific neurons, we use LAPE. LAPE uses [datasets/raw](datasets/raw) to identify language-specific neurons within LLMs.  
+We use the [LAPE codebase](https://github.com/rucaibox/language-specific-neurons). The majority of the code remains unchanged, but we add `code-lape/id-gen.ipynb`, which is missing from the original code, and modify `code-lape/identify.ipynb` to ensure the same number of neurons is selected for each language.
 
 ### datasets
 
