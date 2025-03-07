@@ -16,7 +16,9 @@ MEXA leverages [datasets/parallel](datasets/parallel) to compute alignment betwe
 
 ### code-lape
 
-To calculate language-specific neurons, we use LAPE.
+To calculate language-specific neurons, we use LAPE. LAPE uses [datasets/raw](datasets/raw) to identify language-specific neurons within LLMs.
+We use the [LAPE codebase](https://github.com/rucaibox/language-specific-neurons).
+
 
 ### datasets
 
