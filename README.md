@@ -28,3 +28,15 @@ We use the [LAPE codebase](https://github.com/rucaibox/language-specific-neurons
 
 **raw**: The code to generate raw data from the [Codeparrot repository](https://huggingface.co/datasets/codeparrot/github-code) and Wikipedia is in [datasets/raw/download_raw.ipynb](datasets/raw/download_raw.ipynb).
 
+### citation
+
+If you find our method, code, and data useful for your research, please cite:
+
+```bib
+@article{kargaran2025programming,
+  title={How Programming Concepts and Neurons Are Shared in Code Language Models},
+  author={Kargaran, Amir Hossein and Liu, Yihong and Yvon, Fran{\c{c}}ois and Sch{\"u}tze, Hinrich},
+  journal={arXiv preprint},
+  year={2025}
+}
+```
