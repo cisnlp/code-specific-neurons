@@ -8,10 +8,11 @@ git clone https://github.com/cisnlp/code-specific-neurons.git
 
 ### code-logitlens 
 
-To interpret latent embeddings, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens). We implement our version of Logit Lens in `compute_lens.ipynb`. It uses the [datasets/parallel](datasets/parallel) and sets one language as the input language and the other as the output language. It then performs translation tasks, recording the decoded tokens along with their probabilities and ranks.
+To interpret latent embeddings, we use the [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens). We implement our version of Logit Lens in `code-logitlens/compute_lens.ipynb`. It uses the [datasets/parallel](datasets/parallel) and sets one language as the input language and the other as the output language. It then performs translation tasks, recording the decoded tokens along with their probabilities and ranks.
 
 ### code-mexa 
-To calculate cross-lingual alignment between programming languages, we use MEXA.
+To calculate cross-lingual alignment between programming languages, we use MEXA.  
+MEXA leverages [datasets/parallel](datasets/parallel) to compute alignment between a pivot language and the remaining languages. We use the [MEXA codebase](https://github.com/cisnlp/MEXA) and implement our code in `code-mexa/compute_mexa.ipynb`.
 
 ### code-lape
 
